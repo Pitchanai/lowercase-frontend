@@ -17,8 +17,8 @@ export default function Home({}) {
 
     if (!lowercaseText) return;
 
-    navigator?.clipboard.writeText(text);
-    setNotiText(lowercaseText);
+    navigator?.clipboard.writeText(lowercaseText);
+    setNotiText(text);
   };
 
   const inputFocusHandle = () => {

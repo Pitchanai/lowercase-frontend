@@ -13,12 +13,12 @@ export default function Home({}) {
   const inputHandle = (val: React.ChangeEvent<HTMLInputElement>) => {
     const text = val.target.value;
     const lowercaseText = text?.toLowerCase();
-    setTextValue(lowercaseText);
+    setTextValue(text);
 
     if (!lowercaseText) return;
 
     navigator?.clipboard.writeText(lowercaseText);
-    setNotiText(text);
+    setNotiText(lowercaseText);
   };
 
   const inputFocusHandle = () => {

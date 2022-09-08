@@ -47,13 +47,16 @@ export const useQueryEveryBlock = <T>(
    */
 
   useEffect(() => {
+    if (!web3Store.instance) return;
     query();
-  }, [...dependencies]);
+  }, [...dependencies, web3Store.instance]);
 
   /**
    * This useEffect will query every time the block number changed expect when there's no query happened in this hook yet or the last query hasn't done yet.
    */
   useEffect(() => {
+    console.log("web3Store.blockNumber", web3Store.blockNumber);
+    if (!web3Store.instance) return;
     if (!isQueryOnce) return;
     if (isFetching) return;
     try {

@@ -28,6 +28,13 @@ export class Web3Store {
 
   setInstance = (instance: Web3 | undefined) => {
     this.instance = instance;
+
+    if (!instance) return;
+
+    instance.eth.subscribe("newBlockHeaders", async (_error, block) => {
+      web3Store.setBlockNumber(block.number);
+      web3Store.setBlockTimestamp(Number(block.timestamp));
+    });
   };
 
   setActive = (value: boolean) => {

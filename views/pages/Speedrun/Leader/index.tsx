@@ -8,9 +8,11 @@ import BigNumber from "bignumber.js";
 import { Box, Typography } from "@mui/joy";
 import { accountStore } from "stores/accountStore";
 import { observer } from "mobx-react-lite";
+import { useState } from "react";
 
 export const Leader = observer(() => {
-  const { queryResult: leaders } = useQueryEveryBlock(async () => {
+  const [latestBlock, setLatestBlock] = useState(0);
+  const { queryResult } = useQueryEveryBlock(async () => {
     const logs = await web3Store.instance?.eth.getPastLogs({
       fromBlock: 11343191,
       toBlock: "latest",
@@ -29,23 +31,40 @@ export const Leader = observer(() => {
       uniqueAddress.map((address) => erc20Contract?.methods.balanceOf(address))
     );
 
+    console.log("logs", logs);
+
     console.log("totalBalance", totalBalance);
 
     const results = uniqueAddress.map((address, idx) => ({ address, balance: new BigNumber(totalBalance[idx]) }));
-    const sortedResults = results.sort((a, b) => (a.balance.minus(b.balance).gt(0) ? -1 : 1)).slice(10);
+    const leaders = results.sort((a, b) => (a.balance.minus(b.balance).gt(0) ? -1 : 1)).slice(0, 10);
 
-    console.log("results", sortedResults);
+    console.log("results", leaders);
 
-    return sortedResults;
+    const _sortedLogs = logs?.sort((a, b) => b.blockNumber - a.blockNumber);
+    const sortedLogs = _sortedLogs?.map((log) => {
+      const value = web3Store.instance?.eth.abi.decodeParameter("uint", log.data);
+      return { ...log, value: new BigNumber(value as unknown as string) };
+    });
+
+    return { leaders, sortedLogs };
   }, [accountStore.address]);
   return (
     <Box mt={4}>
       <Typography>Leader Board</Typography>
-      {leaders?.map((leader) => (
+      {queryResult?.leaders.map((leader) => (
         <Typography>
-          {leader.address}: {leader.balance.div("1e18").toFormat(6)} ETH
+          {leader.address}: {leader.balance.div("1e18").toFormat(3)} ETH
         </Typography>
       ))}
+
+      <Box mt={2}>
+        <Typography>Logs</Typography>
+        {queryResult?.sortedLogs?.map((log) => (
+          <Typography>
+            {log.blockNumber} {log.value.div("1e18").toFormat(3)} {log.transactionHash}{" "}
+          </Typography>
+        ))}
+      </Box>
     </Box>
   );
 });

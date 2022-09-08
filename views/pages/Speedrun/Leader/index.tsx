@@ -51,9 +51,9 @@ export const Leader = observer(() => {
   return (
     <Box mt={4}>
       <Typography>Leader Board</Typography>
-      {queryResult?.leaders.map((leader) => (
+      {queryResult?.leaders.map((leader, idx) => (
         <Typography>
-          {leader.address}: {leader.balance.div("1e18").toFormat(3)} ETH
+          {(idx + 1).toString().padStart(2, "0")} {leader.address}: {leader.balance.div("1e18").toFormat(3)} ETH
         </Typography>
       ))}
 

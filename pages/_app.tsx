@@ -2,7 +2,7 @@ import '../styles/globals.css'
 import Head from 'next/head'
 import ReactGA from 'react-ga'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/dist/client/router'
+import { useRouter } from 'next/router'
 
 function MyApp({ Component, pageProps }) {
   const [isGAInitialized, setIsGAInitialized] = useState(false)

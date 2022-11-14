@@ -1,6 +1,6 @@
 import '../styles/globals.css'
 import Head from 'next/head'
-import ReactGA from 'react-ga'
+import ReactGA from 'react-ga4'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
@@ -10,13 +10,19 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     ReactGA.initialize('G-P91F6GXC8D')
-    ReactGA.pageview(window.location.pathname + window.location.search)
+    ReactGA.send({
+      hitType: 'pageview',
+      page: window.location.pathname + window.location.search,
+    })
     setIsGAInitialized(true)
   }, [])
 
   useEffect(() => {
     if (!isGAInitialized) return
-    ReactGA.pageview(window.location.pathname + window.location.search)
+    ReactGA.send({
+      hitType: 'pageview',
+      page: window.location.pathname + window.location.search,
+    })
   }, [router.pathname])
   return (
     <>
